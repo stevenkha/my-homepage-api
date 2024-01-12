@@ -14,7 +14,9 @@ func main() {
 
 	r.Use(cors.Default())
 
-	r.GET("/api/login", routes.LoginHandler)
+	r.GET("/api/login", func(c *gin.Context) {
+		routes.LoginHandler(c)
+	})
 
 	err := r.Run(":8000")
 	if err != nil {
