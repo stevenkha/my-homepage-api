@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	url = "https://aniwatch.to/user/notification?type=1"
+	url = "https://aniwatch.to/home"
 )
 
 func LoginHandler(c *gin.Context) error {
