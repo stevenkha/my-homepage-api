@@ -11,10 +11,13 @@ import (
 )
 
 const (
-	url = "https://aniwatch.to/home"
+	homeUrl = "https://aniwatch.to/home"
 )
 
 func LoginHandler(c *gin.Context) error {
+
+	log.Info("Loading env...")
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Debug("Error loading .env file: %s", err)
@@ -32,7 +35,9 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	caps := selenium.Capabilities{"browserName": "chrome"}
+	log.Info("Initializng selenium...")
+
+	caps := selenium.Capabilities{"browserName": "firefox"}
 	wd, err := selenium.NewRemote(caps, "")
 	if err != nil {
 		log.Debug("Could not initialize selenium")
@@ -40,13 +45,17 @@ func LoginHandler(c *gin.Context) error {
 	}
 	defer wd.Quit()
 
-	err = wd.Get(url)
+	log.Info("Getting url...")
+
+	err = wd.Get(homeUrl)
 	if err != nil {
 		log.Debug("Could not get url")
 		return err
 	}
 
-	login, err := wd.FindElement(selenium.ByClassName, "btn-login")
+	log.Info("Finding login button...")
+
+	login, err := wd.FindElement(selenium.ByCSSSelector, "[data-target='#modallogin']")
 	if err != nil {
 		log.Debug("Could not find login button")
 		return err
@@ -59,11 +68,15 @@ func LoginHandler(c *gin.Context) error {
 
 	time.Sleep(5 * time.Second)
 
+	log.Info("Finding user field...")
+
 	userField, err := wd.FindElement(selenium.ByID, "email")
 	if err != nil {
 		log.Debug("Could not find user field")
 		return err
 	}
+
+	log.Info("Finding pass field...")
 
 	passField, err := wd.FindElement(selenium.ByID, "password")
 	if err != nil {
@@ -71,10 +84,14 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
+	log.Info("Sending keys...")
+
 	if sendKeys(userField, passField, user, pass); err != nil {
 		log.Debug("Could not fill user and pass fields")
 		return err
 	}
+
+	log.Info("Finding submit button...")
 
 	submitLogin, err := wd.FindElement(selenium.ByID, "btn-login")
 	if err != nil {
@@ -82,12 +99,16 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
+	log.Info("Clicking submit button...")
+
 	if submitLogin.Click(); err != nil {
 		log.Debug("Could not process submit login request")
 		return err
 	}
 
 	time.Sleep(5 * time.Second)
+
+	log.Info("LOGGED IN SUCCESSFULLY")
 
 	return nil
 }
