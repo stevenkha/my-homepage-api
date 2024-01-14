@@ -48,7 +48,12 @@ func LoginHandler(c *gin.Context) error {
 
 	login, err := wd.FindElement(selenium.ByClassName, "btn-login")
 	if err != nil {
-		log.Debug("could not find login button")
+		log.Debug("Could not find login button")
+		return err
+	}
+
+	if login.Click(); err != nil {
+		log.Debug("Could not click on login button")
 		return err
 	}
 
