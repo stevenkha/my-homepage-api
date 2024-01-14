@@ -60,5 +60,30 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
+	passField, err := wd.FindElement(selenium.ByID, "password")
+	if err != nil {
+		log.Debug("Could not find pass field")
+		return err
+	}
+
+	if sendKeys(userField, passField, user, pass) != nil {
+		log.Debug("Could not fill user and pass fields")
+		return err
+	}
+
+	return nil
+}
+
+func sendKeys(userField selenium.WebElement, passField selenium.WebElement, user string, pass string) error {
+	err := userField.SendKeys(user)
+	if err != nil {
+		return err
+	}
+
+	err = passField.SendKeys(pass)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
