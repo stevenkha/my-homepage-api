@@ -21,9 +21,14 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	token := os.Getenv("token")
-	if token == "" {
-		log.Fatal("Token is not set")
+	user := os.Getenv("user")
+	if user == "" {
+		log.Fatal("Could not read user")
+	}
+
+	pass := os.Getenv("pass")
+	if pass == "" {
+		log.Fatal("Could not read pass")
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
