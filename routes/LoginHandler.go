@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/tebeka/selenium"
 )
 
 const (
@@ -30,6 +31,13 @@ func LoginHandler(c *gin.Context) error {
 	if pass == "" {
 		log.Fatal("Could not read pass")
 	}
+
+	caps := selenium.Capabilities{"browserName": "chrome"}
+	wd, err := selenium.NewRemote(caps, "")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer wd.Quit()
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
