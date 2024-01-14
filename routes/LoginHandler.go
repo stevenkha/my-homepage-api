@@ -3,8 +3,8 @@ package routes
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -39,19 +39,17 @@ func LoginHandler(c *gin.Context) error {
 	}
 	defer wd.Quit()
 
-	req, err := http.NewRequest("GET", url, nil)
+	err = wd.Get(url)
 	if err != nil {
-		fmt.Println("Could not process request")
-		return err
+		log.Fatal(err)
 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	login, err := wd.FindElement(selenium.ByClassName, "btn-login")
 	if err != nil {
-		fmt.Println("Could not get response")
-		return err
+		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+
+	time.Sleep(2 * time.Second)
 
 	return nil
 }
