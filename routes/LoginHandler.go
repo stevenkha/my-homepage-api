@@ -66,8 +66,19 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	if sendKeys(userField, passField, user, pass) != nil {
+	if sendKeys(userField, passField, user, pass); err != nil {
 		log.Debug("Could not fill user and pass fields")
+		return err
+	}
+
+	submitLogin, err := wd.FindElement(selenium.ByID, "btn-login")
+	if err != nil {
+		log.Debug("Could not find submit button for login")
+		return err
+	}
+
+	if submitLogin.Click(); err != nil {
+		log.Debug("Could not process submit login request")
 		return err
 	}
 
