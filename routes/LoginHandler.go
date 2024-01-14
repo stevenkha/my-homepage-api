@@ -52,7 +52,7 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	userField, err := wd.FindElement(selenium.ByID, "email")
 	if err != nil {
@@ -81,6 +81,8 @@ func LoginHandler(c *gin.Context) error {
 		log.Debug("Could not process submit login request")
 		return err
 	}
+
+	time.Sleep(5 * time.Second)
 
 	return nil
 }
