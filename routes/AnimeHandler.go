@@ -92,6 +92,8 @@ func AnimeHandler(c *gin.Context) error {
 
 	payload := formatResp(series)
 
+	c.JSON(http.StatusOK, payload)
+
 	return nil
 }
 
