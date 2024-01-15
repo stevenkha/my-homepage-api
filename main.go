@@ -14,7 +14,7 @@ func main() {
 
 	r.Use(cors.Default())
 
-	r.GET("/api/login", func(c *gin.Context) {
+	r.GET("/v1/animes", func(c *gin.Context) {
 		err := routes.LoginHandler(c)
 		if err != nil {
 			log.Fatal(err)
