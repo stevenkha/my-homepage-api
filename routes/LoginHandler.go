@@ -26,19 +26,20 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	user := os.Getenv("user")
-	if user == "" {
-		log.Debug("Could not read user")
+	cookieName := os.Getenv("cookieName")
+	if cookieName == "" {
+		log.Debug("Could not read cookie name")
 		return err
 	}
 
-	pass := os.Getenv("pass")
-	if pass == "" {
-		log.Fatal("Could not read pass")
+	cookkieValue := os.Getenv("cookkieValue")
+	if cookkieValue == "" {
+		log.Fatal("Could not read cookie value")
 	}
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
+		log.Error("Coudl not initialize cookiejar")
 		return err
 	}
 
@@ -48,12 +49,13 @@ func LoginHandler(c *gin.Context) error {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		log.Error("Could not create request")
 		return err
 	}
 
 	cookie := &http.Cookie{
-		Name:  "sessionid",
-		Value: "1uyessrm638tbntlstlyadmpk2p9ohu9",
+		Name:  cookieName,
+		Value: cookkieValue,
 	}
 
 	req.AddCookie(cookie)
