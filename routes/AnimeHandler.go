@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strconv"
 	"strings"
 
 	log "github.com/ccpaging/log4go"
@@ -18,10 +19,10 @@ const (
 	listClass = "list-entries"
 )
 
-type payload struct {
+type Payload struct {
+	Cover  string `json:"cover"`
 	Title  string `json:"title"`
 	Latest bool   `json:"latest"`
-	Image  string `json:"image"`
 }
 
 func AnimeHandler(c *gin.Context) error {
@@ -79,7 +80,42 @@ func AnimeHandler(c *gin.Context) error {
 		log.Error("Could not get list of series")
 	}
 
+	var series []*html.Node
+
+	for c := seriesList.FirstChild; c != nil; c = c.NextSibling {
+		series = append(series, c)
+	}
+
+	payload := formatResp(series)
+	log.Debug(payload)
 	return nil
+}
+
+func formatResp(series []*html.Node) Payload {
+	var payload Payload
+
+	// scuffed way of getting the data from the html tags
+	// if DOM structure changes this will break but I'll worry about it later...
+	for _, n := range series {
+		payload.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+		payload.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
+		payload.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
+	}
+
+	return payload
+}
+
+func checkProgress(progress string) bool {
+	parts := strings.Split(progress, "/")
+
+	first, err1 := strconv.Atoi(parts[0])
+	second, err2 := strconv.Atoi(parts[1])
+
+	if err1 == nil && err2 == nil {
+		return first == second
+	}
+
+	return false
 }
 
 func getList(n *html.Node, targetClass string) *html.Node {
