@@ -30,7 +30,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
 
-	cookieName, cookieValue, err := utils.GetEnvValues()
+	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
 	if err != nil {
 		log.Error(err)
 	}

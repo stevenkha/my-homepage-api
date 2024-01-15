@@ -15,7 +15,7 @@ func MangaHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
 
-	cookieName, cookieValue, err := utils.GetEnvValues()
+	cookieName, cookieValue, err := utils.GetEnvValues("mangaCookieName", "mangaCookieValue")
 	if err != nil {
 		log.Error(err)
 	}
