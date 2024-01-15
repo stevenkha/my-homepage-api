@@ -18,6 +18,12 @@ const (
 	listClass = "list-entries"
 )
 
+type payload struct {
+	Title  string `json:"title"`
+	Latest bool   `json:"latest"`
+	Image  string `json:"image"`
+}
+
 func AnimeHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
