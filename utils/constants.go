@@ -1,8 +1,8 @@
-package routes
+package utils
 
 const (
-	animeUrl       = "https://yugenanime.tv/mylist/"
-	animeListClass = "list-entries"
+	AnimeUrl       = "https://yugenanime.tv/mylist/"
+	AnimeListClass = "list-entries"
 
-	managaUrl = "https://manganato.com/bookmark"
+	ManagaUrl = "https://manganato.com/bookmark"
 )

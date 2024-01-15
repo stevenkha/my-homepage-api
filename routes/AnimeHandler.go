@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"golang.org/x/net/html"
+
+	"my-homepage-api/utils"
 )
 
 type AnimeInfo struct {
@@ -43,7 +45,7 @@ func AnimeHandler(c *gin.Context) error {
 		Jar: jar,
 	}
 
-	req, err := http.NewRequest("GET", animeUrl, nil)
+	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request")
 		return err
@@ -74,7 +76,7 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	seriesList := getList(doc, animeListClass)
+	seriesList := getList(doc, utils.AnimeListClass)
 	if seriesList == nil {
 		log.Error("Could not get list of series")
 	}
