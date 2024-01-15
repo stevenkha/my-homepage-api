@@ -30,7 +30,7 @@ func MangaHandler(c *gin.Context) error {
 		Jar: jar,
 	}
 
-	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
+	req, err := http.NewRequest("GET", utils.ManagaUrl, nil)
 	if err != nil {
 		log.Error("Could not create request")
 		return err
