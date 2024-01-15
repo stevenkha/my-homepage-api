@@ -14,11 +14,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-const (
-	url       = "https://yugenanime.tv/mylist/"
-	listClass = "list-entries"
-)
-
 type AnimeInfo struct {
 	Cover  string `json:"cover"`
 	Title  string `json:"title"`
@@ -48,7 +43,7 @@ func AnimeHandler(c *gin.Context) error {
 		Jar: jar,
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", animeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request")
 		return err
@@ -79,7 +74,7 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	seriesList := getList(doc, listClass)
+	seriesList := getList(doc, animeListClass)
 	if seriesList == nil {
 		log.Error("Could not get list of series")
 	}
