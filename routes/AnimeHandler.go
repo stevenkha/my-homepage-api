@@ -152,13 +152,13 @@ func getEnvValues() (string, string, error) {
 		return "", "", err
 	}
 
-	cookieName := os.Getenv("cookieName")
+	cookieName := os.Getenv("animeCookieName")
 	if cookieName == "" {
 		log.Debug("Could not read cookie name")
 		return "", "", err
 	}
 
-	cookieValue := os.Getenv("cookieValue")
+	cookieValue := os.Getenv("animeCookieValue")
 	if cookieValue == "" {
 		log.Fatal("Could not read cookie value")
 	}
