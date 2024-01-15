@@ -68,18 +68,12 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	parseBody(doc)
-
-	return nil
-}
-
-func parseBody(doc *html.Node) {
-	listEntriesDiv := getList(doc, listClass)
-	if listEntriesDiv == nil {
-		log.Error("Could not find list div")
+	seriesList := getList(doc, listClass)
+	if seriesList == nil {
+		log.Error("Could not get list of series")
 	}
 
-	log.Debug(listEntriesDiv)
+	return nil
 }
 
 func getList(n *html.Node, targetClass string) *html.Node {
