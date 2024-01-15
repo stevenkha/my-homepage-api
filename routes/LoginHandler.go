@@ -32,8 +32,8 @@ func LoginHandler(c *gin.Context) error {
 		return err
 	}
 
-	cookkieValue := os.Getenv("cookkieValue")
-	if cookkieValue == "" {
+	cookieValue := os.Getenv("cookieValue")
+	if cookieValue == "" {
 		log.Fatal("Could not read cookie value")
 	}
 
@@ -55,7 +55,7 @@ func LoginHandler(c *gin.Context) error {
 
 	cookie := &http.Cookie{
 		Name:  cookieName,
-		Value: cookkieValue,
+		Value: cookieValue,
 	}
 
 	req.AddCookie(cookie)
