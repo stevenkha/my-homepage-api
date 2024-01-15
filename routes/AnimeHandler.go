@@ -4,13 +4,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
-	"os"
 	"strconv"
 	"strings"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"golang.org/x/net/html"
 
 	"my-homepage-api/utils"
@@ -30,7 +28,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
 
-	cookieName, cookieValue, err := getEnvValues()
+	cookieName, cookieValue, err := utils.GetEnvValues()
 	if err != nil {
 		log.Error(err)
 	}
@@ -140,25 +138,4 @@ func getList(n *html.Node, targetClass string) *html.Node {
 	}
 
 	return nil
-}
-
-func getEnvValues() (string, string, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Debug("Error loading .env file: %s", err)
-		return "", "", err
-	}
-
-	cookieName := os.Getenv("animeCookieName")
-	if cookieName == "" {
-		log.Debug("Could not read cookie name")
-		return "", "", err
-	}
-
-	cookieValue := os.Getenv("animeCookieValue")
-	if cookieValue == "" {
-		log.Fatal("Could not read cookie value")
-	}
-
-	return cookieName, cookieValue, nil
 }
