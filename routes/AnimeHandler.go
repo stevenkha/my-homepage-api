@@ -1,17 +1,21 @@
 package routes
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strings"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"golang.org/x/net/html"
 )
 
 const (
-	url = "https://yugenanime.tv/mylist/"
+	url       = "https://yugenanime.tv/mylist/"
+	listClass = "list-entries"
 )
 
 func AnimeHandler(c *gin.Context) error {
@@ -51,6 +55,47 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Debug("Error reading response body:", err)
+		return err
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Debug("Error parsing html: ")
+		return err
+	}
+
+	parseBody(doc)
+
+	return nil
+}
+
+func parseBody(doc *html.Node) {
+	listEntriesDiv := getList(doc, listClass)
+	if listEntriesDiv == nil {
+		log.Error("Could not find list div")
+	}
+
+	log.Debug(listEntriesDiv)
+}
+
+func getList(n *html.Node, targetClass string) *html.Node {
+	if n.Type == html.ElementNode {
+		for _, attr := range n.Attr {
+			if attr.Key == "class" && strings.Contains(attr.Val, targetClass) {
+				return n
+			}
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if result := getList(c, targetClass); result != nil {
+			return result
+		}
+	}
 
 	return nil
 }
