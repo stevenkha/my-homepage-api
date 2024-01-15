@@ -19,10 +19,14 @@ const (
 	listClass = "list-entries"
 )
 
-type Payload struct {
+type AnimeInfo struct {
 	Cover  string `json:"cover"`
 	Title  string `json:"title"`
 	Latest bool   `json:"latest"`
+}
+
+type Payload struct {
+	Data []AnimeInfo `json:"data"`
 }
 
 func AnimeHandler(c *gin.Context) error {
@@ -91,18 +95,18 @@ func AnimeHandler(c *gin.Context) error {
 	return nil
 }
 
-func formatResp(series []*html.Node) Payload {
-	var payload Payload
+func formatResp(series []*html.Node) AnimeInfo {
+	var anime AnimeInfo
 
 	// scuffed way of getting the data from the html tags
 	// if DOM structure changes this will break but I'll worry about it later...
 	for _, n := range series {
-		payload.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
-		payload.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-		payload.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
+		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
+		anime.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
 	}
 
-	return payload
+	return anime
 }
 
 func checkProgress(progress string) bool {
