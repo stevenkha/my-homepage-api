@@ -1,17 +1,19 @@
 package routes
 
 import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/cookiejar"
 	"os"
-	"time"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/tebeka/selenium"
 )
 
 const (
-	homeUrl = "https://aniwatch.to/home"
+	url = "https://yugenanime.tv/mylist/"
 )
 
 func LoginHandler(c *gin.Context) error {
@@ -32,97 +34,42 @@ func LoginHandler(c *gin.Context) error {
 
 	pass := os.Getenv("pass")
 	if pass == "" {
-		return err
+		log.Fatal("Could not read pass")
 	}
 
-	log.Info("Initializng selenium...")
-
-	caps := selenium.Capabilities{"browserName": "firefox"}
-	wd, err := selenium.NewRemote(caps, "")
-	if err != nil {
-		log.Debug("Could not initialize selenium")
-		return err
-	}
-	defer wd.Quit()
-
-	log.Info("Getting url...")
-
-	err = wd.Get(homeUrl)
-	if err != nil {
-		log.Debug("Could not get url")
-		return err
-	}
-
-	log.Info("Finding login button...")
-
-	login, err := wd.FindElement(selenium.ByCSSSelector, "[data-target='#modallogin']")
-	if err != nil {
-		log.Debug("Could not find login button")
-		return err
-	}
-
-	if login.Click(); err != nil {
-		log.Debug("Could not click on login button")
-		return err
-	}
-
-	time.Sleep(5 * time.Second)
-
-	log.Info("Finding user field...")
-
-	userField, err := wd.FindElement(selenium.ByID, "email")
-	if err != nil {
-		log.Debug("Could not find user field")
-		return err
-	}
-
-	log.Info("Finding pass field...")
-
-	passField, err := wd.FindElement(selenium.ByID, "password")
-	if err != nil {
-		log.Debug("Could not find pass field")
-		return err
-	}
-
-	log.Info("Sending keys...")
-
-	if sendKeys(userField, passField, user, pass); err != nil {
-		log.Debug("Could not fill user and pass fields")
-		return err
-	}
-
-	log.Info("Finding submit button...")
-
-	submitLogin, err := wd.FindElement(selenium.ByID, "btn-login")
-	if err != nil {
-		log.Debug("Could not find submit button for login")
-		return err
-	}
-
-	log.Info("Clicking submit button...")
-
-	if submitLogin.Click(); err != nil {
-		log.Debug("Could not process submit login request")
-		return err
-	}
-
-	time.Sleep(5 * time.Second)
-
-	log.Info("LOGGED IN SUCCESSFULLY")
-
-	return nil
-}
-
-func sendKeys(userField selenium.WebElement, passField selenium.WebElement, user string, pass string) error {
-	err := userField.SendKeys(user)
+	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return err
 	}
 
-	err = passField.SendKeys(pass)
+	client := &http.Client{
+		Jar: jar,
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
+
+	cookie := &http.Cookie{
+		Name:  "sessionid",
+		Value: "1uyessrm638tbntlstlyadmpk2p9ohu9",
+	}
+
+	req.AddCookie(cookie)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(body))
 
 	return nil
 }
