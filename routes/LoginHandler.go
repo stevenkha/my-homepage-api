@@ -25,7 +25,7 @@ func LoginHandler(c *gin.Context) error {
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		log.Error("Coudl not initialize cookiejar")
+		log.Error("Could not initialize cookiejar")
 		return err
 	}
 
