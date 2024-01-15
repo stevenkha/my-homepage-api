@@ -15,7 +15,7 @@ func main() {
 	r.Use(cors.Default())
 
 	r.GET("/v1/animes", func(c *gin.Context) {
-		err := routes.LoginHandler(c)
+		err := routes.AnimeHandler(c)
 		if err != nil {
 			log.Fatal(err)
 		}

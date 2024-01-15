@@ -14,7 +14,7 @@ const (
 	url = "https://yugenanime.tv/mylist/"
 )
 
-func LoginHandler(c *gin.Context) error {
+func AnimeHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
 
