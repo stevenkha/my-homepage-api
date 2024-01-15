@@ -25,6 +25,8 @@ type Payload struct {
 }
 
 func AnimeHandler(c *gin.Context) error {
+	// TODO: Initializing cookies and client is redundant for both Manga and Anime
+	// Clean it up later
 
 	log.Info("Loading env...")
 
