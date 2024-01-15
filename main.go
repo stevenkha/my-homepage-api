@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"my-homepage-api/routes"
 
 	"github.com/gin-contrib/cors"
