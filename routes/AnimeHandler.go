@@ -91,12 +91,13 @@ func AnimeHandler(c *gin.Context) error {
 	}
 
 	payload := formatResp(series)
-	log.Debug(payload)
+
 	return nil
 }
 
-func formatResp(series []*html.Node) AnimeInfo {
+func formatResp(series []*html.Node) Payload {
 	var anime AnimeInfo
+	var resPayload Payload
 
 	// scuffed way of getting the data from the html tags
 	// if DOM structure changes this will break but I'll worry about it later...
@@ -104,9 +105,11 @@ func formatResp(series []*html.Node) AnimeInfo {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
 		anime.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
+
+		resPayload.Data = append(resPayload.Data, anime)
 	}
 
-	return anime
+	return resPayload
 }
 
 func checkProgress(progress string) bool {
