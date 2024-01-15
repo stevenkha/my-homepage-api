@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"os"
@@ -20,21 +18,9 @@ func LoginHandler(c *gin.Context) error {
 
 	log.Info("Loading env...")
 
-	err := godotenv.Load(".env")
+	cookieName, cookieValue, err := getEnvValues()
 	if err != nil {
-		log.Debug("Error loading .env file: %s", err)
-		return err
-	}
-
-	cookieName := os.Getenv("cookieName")
-	if cookieName == "" {
-		log.Debug("Could not read cookie name")
-		return err
-	}
-
-	cookieValue := os.Getenv("cookieValue")
-	if cookieValue == "" {
-		log.Fatal("Could not read cookie value")
+		log.Error(err)
 	}
 
 	jar, err := cookiejar.New(nil)
@@ -66,12 +52,26 @@ func LoginHandler(c *gin.Context) error {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	return nil
+}
+
+func getEnvValues() (string, string, error) {
+	err := godotenv.Load(".env")
 	if err != nil {
-		return err
+		log.Debug("Error loading .env file: %s", err)
+		return "", "", err
 	}
 
-	fmt.Println(string(body))
+	cookieName := os.Getenv("cookieName")
+	if cookieName == "" {
+		log.Debug("Could not read cookie name")
+		return "", "", err
+	}
 
-	return nil
+	cookieValue := os.Getenv("cookieValue")
+	if cookieValue == "" {
+		log.Fatal("Could not read cookie value")
+	}
+
+	return cookieName, cookieValue, nil
 }
