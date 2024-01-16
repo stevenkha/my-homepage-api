@@ -21,7 +21,7 @@ type AnimeInfo struct {
 }
 
 type AnimePayload struct {
-	Animes []AnimeInfo `json:"data"`
+	Animes []AnimeInfo `json:"animes"`
 }
 
 func AnimeHandler(c *gin.Context) {
