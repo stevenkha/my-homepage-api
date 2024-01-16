@@ -99,6 +99,9 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 	// if DOM structure changes this will break but I'll worry about it later...
 	for _, n := range mangas {
 		manga.Cover = n.FirstChild.FirstChild.NextSibling.Attr[0].Val
+		manga.Title = n.FirstChild.NextSibling.FirstChild.NextSibling.FirstChild.FirstChild.Data
+		manga.Viewed = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.NextSibling.FirstChild.Data
+		manga.Current = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.NextSibling.FirstChild.Data
 
 		resPayload.Mangas = append(resPayload.Mangas, manga)
 	}
