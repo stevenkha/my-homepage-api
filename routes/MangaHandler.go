@@ -82,9 +82,22 @@ func MangaHandler(c *gin.Context) error {
 
 	mangas := utils.MakeList(bookmarkListDiv)
 
+	payload := formatMangaResp(mangas)
+
+	log.Debug(payload)
+
 	return nil
 }
 
-func formatMangaResp() {
+func formatMangaResp(mangas []*html.Node) MangaPayload {
+	var manga MangaInfo
+	var resPayload MangaPayload
 
+	for _, n := range mangas {
+		manga.Cover = n.FirstChild.FirstChild.NextSibling.Attr[0].Val
+
+		resPayload.Mangas = append(resPayload.Mangas, manga)
+	}
+
+	return MangaPayload{}
 }
