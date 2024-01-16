@@ -11,7 +11,7 @@ const (
 	AnimeUrl       = "https://yugenanime.tv/mylist/"
 	AnimeListClass = "list-entries"
 
-	ManagaUrl = "https://manganato.com/bookmark"
+	MangaUrl = "https://user.mngusr.com/bookmark_get_list_full"
 )
 
 func GetEnvValues(name string, value string) (string, string, error) {
