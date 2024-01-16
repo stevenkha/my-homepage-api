@@ -2,6 +2,7 @@ package main
 
 import (
 	"my-homepage-api/handlers"
+	"my-homepage-api/routes"
 
 	log "github.com/ccpaging/log4go"
 
@@ -16,13 +17,7 @@ func main() {
 
 	version := r.Group("/v1")
 	{
-		version.GET("/animes", func(c *gin.Context) {
-			err := handlers.AnimeHandler(c)
-			if err != nil {
-				log.Error(err)
-			}
-		})
-
+		routes.AnimeRoutes(version.Group("/anime"))
 		version.GET("/mangas", func(c *gin.Context) {
 			err := handlers.MangaHandler(c)
 			if err != nil {

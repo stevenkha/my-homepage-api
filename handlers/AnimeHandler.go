@@ -24,16 +24,15 @@ type AnimePayload struct {
 	Animes []AnimeInfo `json:"data"`
 }
 
-func AnimeHandler(c *gin.Context) error {
+func AnimeHandler(c *gin.Context) {
 	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
 	if err != nil {
-		return err
+		log.Error("Could not get env values")
 	}
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		log.Debug("Could not initialize cookiejar: ")
-		return err
+		log.Error("Could not initialize cookiejar: ")
 	}
 
 	client := &http.Client{
@@ -42,8 +41,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
 	if err != nil {
-		log.Debug("Could not create request: ")
-		return err
+		log.Error("Could not create request: ")
 	}
 
 	cookie := &http.Cookie{
@@ -55,25 +53,23 @@ func AnimeHandler(c *gin.Context) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		log.Error("Could not send HTTP request")
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Debug("Error reading response body: ")
-		return err
+		log.Error("Error reading response body: ")
 	}
 
 	doc, err := html.Parse(strings.NewReader(string(body)))
 	if err != nil {
-		log.Debug("Error parsing html: ")
-		return err
+		log.Error("Error parsing html: ")
 	}
 
 	watchingListDiv := utils.GetListDiv(doc, utils.AnimeListClass)
 	if watchingListDiv == nil {
-		log.Debug("Could not get list of series")
+		log.Error("Could not get list of series")
 	}
 
 	animes := utils.MakeList(watchingListDiv)
@@ -81,8 +77,6 @@ func AnimeHandler(c *gin.Context) error {
 	payload := formatAnimeResp(animes)
 
 	c.JSON(http.StatusOK, payload)
-
-	return nil
 }
 
 func formatAnimeResp(series []*html.Node) AnimePayload {
