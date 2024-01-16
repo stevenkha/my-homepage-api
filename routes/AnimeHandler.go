@@ -102,6 +102,8 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 	return resPayload
 }
 
+// Check if I am caught up with the latest episode
+// format of this data is '12/12' so check if the first half is equal to the second i.e '11/12'
 func checkProgress(progress string) bool {
 	parts := strings.Split(progress, "/")
 
