@@ -11,6 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type BookmarkResponse struct {
+	Result string `json:"result"`
+	Data   string `json:"data"`
+}
+
 func MangaHandler(c *gin.Context) error {
 
 	dataName, dataValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
