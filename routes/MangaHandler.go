@@ -38,6 +38,7 @@ func MangaHandler(c *gin.Context) error {
 
 	client := &http.Client{}
 
+	// form data to send to the manganato API when sending post request to get user bookmarks
 	formData := url.Values{}
 	formData.Set(dataName, dataValue)
 	formData.Set("bm_source", "manganato")
@@ -69,6 +70,7 @@ func MangaHandler(c *gin.Context) error {
 		return err
 	}
 
+	// parse only the bookmarks html portion of the response payload
 	doc, err := html.Parse(strings.NewReader(string(postPayload.Data)))
 	if err != nil {
 		log.Debug("Error parsing html: ")
@@ -93,6 +95,8 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 	var manga MangaInfo
 	var resPayload MangaPayload
 
+	// similar note about getting animes
+	// if DOM structure changes this will break but I'll worry about it later...
 	for _, n := range mangas {
 		manga.Cover = n.FirstChild.FirstChild.NextSibling.Attr[0].Val
 
