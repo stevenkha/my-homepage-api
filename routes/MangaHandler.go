@@ -18,7 +18,7 @@ type BookmarkResponse struct {
 	Data   string `json:"data"`
 }
 
-type BookmarkInfo struct {
+type MangaInfo struct {
 	Cover   string `json:"cover"`
 	Title   string `json:"title"`
 	Viewed  string `json:"viewed"`
