@@ -83,16 +83,16 @@ func AnimeHandler(c *gin.Context) error {
 
 	animes := utils.MakeList(watchingListDiv)
 
-	payload := formatResp(animes)
+	payload := formatAnimeResp(animes)
 
 	c.JSON(http.StatusOK, payload)
 
 	return nil
 }
 
-func formatResp(series []*html.Node) Payload {
+func formatAnimeResp(series []*html.Node) AnimePayload {
 	var anime AnimeInfo
-	var resPayload Payload
+	var resPayload AnimePayload
 
 	// scuffed way of getting the data from the html tags
 	// if DOM structure changes this will break but I'll worry about it later...

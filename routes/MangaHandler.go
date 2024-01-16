@@ -84,3 +84,7 @@ func MangaHandler(c *gin.Context) error {
 
 	return nil
 }
+
+func formatMangaResp() {
+
+}
