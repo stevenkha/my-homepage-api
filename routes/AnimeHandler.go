@@ -20,7 +20,7 @@ type AnimeInfo struct {
 	Latest bool   `json:"latest"`
 }
 
-type Payload struct {
+type AnimePayload struct {
 	Animes []AnimeInfo `json:"data"`
 }
 

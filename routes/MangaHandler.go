@@ -25,6 +25,10 @@ type MangaInfo struct {
 	Current string `json:"current"`
 }
 
+type MangaPayload struct {
+	Mangas []MangaInfo `json:"mangas"`
+}
+
 func MangaHandler(c *gin.Context) error {
 
 	dataName, dataValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
