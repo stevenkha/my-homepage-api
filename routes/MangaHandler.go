@@ -13,7 +13,7 @@ import (
 
 func MangaHandler(c *gin.Context) error {
 
-	cookieName, cookieValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
+	dataName, dataValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func MangaHandler(c *gin.Context) error {
 	client := &http.Client{}
 
 	formData := url.Values{}
-	formData.Set(cookieName, cookieValue)
+	formData.Set(dataName, dataValue)
 	formData.Set("bm_source", "manganato")
 	formData.Set("out_type", "html")
 
