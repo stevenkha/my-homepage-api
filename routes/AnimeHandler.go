@@ -76,16 +76,12 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	seriesList := utils.GetListDiv(doc, utils.AnimeListClass)
-	if seriesList == nil {
+	watchingListDiv := utils.GetListDiv(doc, utils.AnimeListClass)
+	if watchingListDiv == nil {
 		log.Debug("Could not get list of series")
 	}
 
-	var series []*html.Node
-
-	for c := seriesList.FirstChild; c != nil; c = c.NextSibling {
-		series = append(series, c)
-	}
+	series := utils.MakeList(watchingListDiv)
 
 	payload := formatResp(series)
 

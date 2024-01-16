@@ -71,16 +71,12 @@ func MangaHandler(c *gin.Context) error {
 		return err
 	}
 
-	bookmarkList := utils.GetListDiv(doc, "user-bookmark-content")
-	if bookmarkList == nil {
+	bookmarkListDiv := utils.GetListDiv(doc, "user-bookmark-content")
+	if bookmarkListDiv == nil {
 		log.Debug("Could not find bookmark list node")
 	}
 
-	var series []*html.Node
-
-	for c := bookmarkList.FirstChild; c != nil; c = c.NextSibling {
-		series = append(series, c)
-	}
+	mangas := utils.MakeList(bookmarkListDiv)
 
 	return nil
 }

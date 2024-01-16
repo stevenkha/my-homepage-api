@@ -48,3 +48,13 @@ func GetListDiv(n *html.Node, targetClass string) *html.Node {
 
 	return nil
 }
+
+func MakeList(n *html.Node) []*html.Node {
+	var list []*html.Node
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		list = append(list, c)
+	}
+
+	return list
+}
