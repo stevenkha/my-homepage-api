@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"my-homepage-api/utils"
 	"net/http"
@@ -50,7 +51,11 @@ func MangaHandler(c *gin.Context) error {
 		return err
 	}
 
-	log.Debug(string(body))
+	var postPayload BookmarkResponse
+	err = json.Unmarshal(body, &postPayload)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
