@@ -17,6 +17,13 @@ type BookmarkResponse struct {
 	Data   string `json:"data"`
 }
 
+type BookmarkPayload struct {
+	Cover   string `json:"cover"`
+	Title   string `json:"title"`
+	Viewed  string `json:"viewed"`
+	Current string `json:"current"`
+}
+
 func MangaHandler(c *gin.Context) error {
 
 	dataName, dataValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
