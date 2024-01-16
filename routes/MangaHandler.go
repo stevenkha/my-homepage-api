@@ -10,6 +10,7 @@ import (
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/html"
 )
 
 type BookmarkResponse struct {
@@ -62,6 +63,17 @@ func MangaHandler(c *gin.Context) error {
 	err = json.Unmarshal(body, &postPayload)
 	if err != nil {
 		return err
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Debug("Error parsing html: ")
+		return err
+	}
+
+	bookmarkList := utils.GetList(doc, "user-bookmark-content")
+	if bookmarkList == nil {
+		log.Debug("Could not find bookmark list node")
 	}
 
 	return nil
