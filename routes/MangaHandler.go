@@ -80,6 +80,7 @@ func MangaHandler(c *gin.Context) error {
 		log.Debug("Could not find bookmark list node")
 	}
 
+	// TODO: This is not getting all the children for mangas. Fix
 	mangas := utils.MakeList(bookmarkListDiv)
 
 	payload := formatMangaResp(mangas)
