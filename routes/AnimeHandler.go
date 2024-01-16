@@ -81,9 +81,9 @@ func AnimeHandler(c *gin.Context) error {
 		log.Debug("Could not get list of series")
 	}
 
-	series := utils.MakeList(watchingListDiv)
+	animes := utils.MakeList(watchingListDiv)
 
-	payload := formatResp(series)
+	payload := formatResp(animes)
 
 	c.JSON(http.StatusOK, payload)
 
