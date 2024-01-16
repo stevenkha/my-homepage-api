@@ -76,7 +76,7 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	seriesList := getList(doc, utils.AnimeListClass)
+	seriesList := utils.GetList(doc, utils.AnimeListClass)
 	if seriesList == nil {
 		log.Debug("Could not get list of series")
 	}
@@ -122,22 +122,4 @@ func checkProgress(progress string) bool {
 	}
 
 	return false
-}
-
-func getList(n *html.Node, targetClass string) *html.Node {
-	if n.Type == html.ElementNode {
-		for _, attr := range n.Attr {
-			if attr.Key == "class" && strings.Contains(attr.Val, targetClass) {
-				return n
-			}
-		}
-	}
-
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		if result := getList(c, targetClass); result != nil {
-			return result
-		}
-	}
-
-	return nil
 }
