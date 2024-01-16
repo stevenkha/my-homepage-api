@@ -21,7 +21,7 @@ type AnimeInfo struct {
 }
 
 type Payload struct {
-	Data []AnimeInfo `json:"data"`
+	Animes []AnimeInfo `json:"data"`
 }
 
 func AnimeHandler(c *gin.Context) error {
@@ -101,7 +101,7 @@ func formatResp(series []*html.Node) Payload {
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
 		anime.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
 
-		resPayload.Data = append(resPayload.Data, anime)
+		resPayload.Animes = append(resPayload.Animes, anime)
 	}
 
 	return resPayload
