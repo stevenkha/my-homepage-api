@@ -9,3 +9,7 @@ import (
 func AnimeRoutes(g *gin.RouterGroup) {
 	g.GET("", handlers.AnimeHandler)
 }
+
+func MangaRoutes(g *gin.RouterGroup) {
+	g.GET("", handlers.MangaHandler)
+}

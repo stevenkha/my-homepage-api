@@ -29,11 +29,11 @@ type MangaPayload struct {
 	Mangas []MangaInfo `json:"mangas"`
 }
 
-func MangaHandler(c *gin.Context) error {
+func MangaHandler(c *gin.Context) {
 
 	dataName, dataValue, err := utils.GetEnvValues("bookmarkDataName", "bookmarkDataValue")
 	if err != nil {
-		return err
+		log.Error("Could not get env values")
 	}
 
 	client := &http.Client{}
@@ -46,40 +46,35 @@ func MangaHandler(c *gin.Context) error {
 
 	req, err := http.NewRequest("POST", utils.MangaUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
-		log.Debug("Could not make post request to manganato api")
-		return err
+		log.Error("Could not make post request to manganato api")
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Debug("Could not read post response body")
-		return err
+		log.Error("Could not read post response body")
 	}
 
 	var postPayload BookmarkResponse
 	err = json.Unmarshal(body, &postPayload)
 	if err != nil {
-		return err
 	}
 
 	// parse only the bookmarks html portion of the response payload
 	doc, err := html.Parse(strings.NewReader(string(postPayload.Data)))
 	if err != nil {
-		log.Debug("Error parsing html: ")
-		return err
+		log.Error("Error parsing html: ")
 	}
 
 	bookmarkListDiv := utils.GetListDiv(doc, "user-bookmark-content")
 	if bookmarkListDiv == nil {
-		log.Debug("Could not find bookmark list node")
+		log.Error("Could not find bookmark list node")
 	}
 
 	mangas := utils.MakeList(bookmarkListDiv)
@@ -87,8 +82,6 @@ func MangaHandler(c *gin.Context) error {
 	payload := formatMangaResp(mangas)
 
 	c.JSON(http.StatusOK, payload)
-
-	return nil
 }
 
 func formatMangaResp(mangas []*html.Node) MangaPayload {
