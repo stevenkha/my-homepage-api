@@ -69,7 +69,7 @@ func MangaHandler(c *gin.Context) error {
 		return err
 	}
 
-	doc, err := html.Parse(strings.NewReader(string(body)))
+	doc, err := html.Parse(strings.NewReader(string(postPayload.Data)))
 	if err != nil {
 		log.Debug("Error parsing html: ")
 		return err
@@ -80,7 +80,6 @@ func MangaHandler(c *gin.Context) error {
 		log.Debug("Could not find bookmark list node")
 	}
 
-	// TODO: This is not getting all the children for mangas. Fix
 	mangas := utils.MakeList(bookmarkListDiv)
 
 	payload := formatMangaResp(mangas)
