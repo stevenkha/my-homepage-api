@@ -71,7 +71,7 @@ func MangaHandler(c *gin.Context) error {
 		return err
 	}
 
-	bookmarkList := utils.GetList(doc, "user-bookmark-content")
+	bookmarkList := utils.GetListDiv(doc, "user-bookmark-content")
 	if bookmarkList == nil {
 		log.Debug("Could not find bookmark list node")
 	}

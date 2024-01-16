@@ -31,7 +31,7 @@ func GetEnvValues(name string, value string) (string, string, error) {
 	return cookieName, cookieValue, nil
 }
 
-func GetList(n *html.Node, targetClass string) *html.Node {
+func GetListDiv(n *html.Node, targetClass string) *html.Node {
 	if n.Type == html.ElementNode {
 		for _, attr := range n.Attr {
 			if attr.Key == "class" && strings.Contains(attr.Val, targetClass) {
@@ -41,7 +41,7 @@ func GetList(n *html.Node, targetClass string) *html.Node {
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		if result := GetList(c, targetClass); result != nil {
+		if result := GetListDiv(c, targetClass); result != nil {
 			return result
 		}
 	}

@@ -76,7 +76,7 @@ func AnimeHandler(c *gin.Context) error {
 		return err
 	}
 
-	seriesList := utils.GetList(doc, utils.AnimeListClass)
+	seriesList := utils.GetListDiv(doc, utils.AnimeListClass)
 	if seriesList == nil {
 		log.Debug("Could not get list of series")
 	}
