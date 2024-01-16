@@ -86,7 +86,7 @@ func MangaHandler(c *gin.Context) error {
 
 	payload := formatMangaResp(mangas)
 
-	log.Debug(payload)
+	c.JSON(http.StatusOK, payload)
 
 	return nil
 }
@@ -106,5 +106,5 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 		resPayload.Mangas = append(resPayload.Mangas, manga)
 	}
 
-	return MangaPayload{}
+	return resPayload
 }
