@@ -32,12 +32,12 @@ func AnimeHandler(c *gin.Context) error {
 
 	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
 	if err != nil {
-		log.Error(err)
+		return err
 	}
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		log.Error("Could not initialize cookiejar")
+		log.Debug("Could not initialize cookiejar: ")
 		return err
 	}
 
@@ -47,7 +47,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
 	if err != nil {
-		log.Error("Could not create request")
+		log.Debug("Could not create request: ")
 		return err
 	}
 
@@ -66,7 +66,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Debug("Error reading response body:", err)
+		log.Debug("Error reading response body: ")
 		return err
 	}
 
@@ -78,7 +78,7 @@ func AnimeHandler(c *gin.Context) error {
 
 	seriesList := getList(doc, utils.AnimeListClass)
 	if seriesList == nil {
-		log.Error("Could not get list of series")
+		log.Debug("Could not get list of series")
 	}
 
 	var series []*html.Node

@@ -27,6 +27,7 @@ func MangaHandler(c *gin.Context) error {
 
 	req, err := http.NewRequest("POST", utils.MangaUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
+		log.Debug("Could not make post request to manganato api")
 		return err
 	}
 
@@ -40,6 +41,7 @@ func MangaHandler(c *gin.Context) error {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Debug("Could not read post response body")
 		return err
 	}
 
