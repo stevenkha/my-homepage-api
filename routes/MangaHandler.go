@@ -76,5 +76,11 @@ func MangaHandler(c *gin.Context) error {
 		log.Debug("Could not find bookmark list node")
 	}
 
+	var series []*html.Node
+
+	for c := bookmarkList.FirstChild; c != nil; c = c.NextSibling {
+		series = append(series, c)
+	}
+
 	return nil
 }
