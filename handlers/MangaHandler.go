@@ -96,6 +96,10 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 		manga.Viewed = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.NextSibling.FirstChild.Data
 		manga.Current = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.NextSibling.FirstChild.Data
 
+		if manga.Viewed == manga.Current {
+			continue
+		}
+
 		resPayload.Mangas = append(resPayload.Mangas, manga)
 	}
 
