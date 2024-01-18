@@ -19,10 +19,11 @@ type BookmarkResponse struct {
 }
 
 type MangaInfo struct {
-	Cover   string `json:"cover"`
-	Title   string `json:"title"`
-	Viewed  string `json:"viewed"`
-	Current string `json:"current"`
+	Cover       string `json:"cover"`
+	Title       string `json:"title"`
+	Viewed      string `json:"viewed"`
+	Current     string `json:"current"`
+	CurrentLink string `json:"currentLink"`
 }
 
 type MangaPayload struct {
@@ -99,6 +100,8 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 		if manga.Viewed == manga.Current {
 			continue
 		}
+
+		manga.CurrentLink = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.NextSibling.Attr[2].Val
 
 		resPayload.Mangas = append(resPayload.Mangas, manga)
 	}
