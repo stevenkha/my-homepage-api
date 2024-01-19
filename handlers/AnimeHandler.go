@@ -82,7 +82,18 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 	for _, n := range series {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-		anime.Latest = checkProgress(n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data)
+		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
+
+		parts := strings.Split(progress, "/")
+
+		anime.Viewed = parts[0]
+		anime.Current = parts[1]
+
+		if caughtUp, err := checkProgress(anime.Current, anime.Viewed); err != nil {
+			log.Error("Could not check progress: %v", err)
+		} else if caughtUp {
+			continue
+		}
 
 		resPayload.Animes = append(resPayload.Animes, anime)
 	}
@@ -92,15 +103,16 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 
 // Check if I am caught up with the latest episode
 // format of this data is '12/12' so check if the first half is equal to the second i.e '11/12'
-func checkProgress(progress string) bool {
-	parts := strings.Split(progress, "/")
-
-	first, err1 := strconv.Atoi(parts[0])
-	second, err2 := strconv.Atoi(parts[1])
-
-	if err1 == nil && err2 == nil {
-		return first == second
+func checkProgress(current string, viewed string) (bool, error) {
+	c, err1 := strconv.Atoi(current)
+	if err1 != nil {
+		return false, err1
 	}
 
-	return false
+	v, err2 := strconv.Atoi(viewed)
+	if err2 != nil {
+		return false, err2
+	}
+
+	return c == v, nil
 }
