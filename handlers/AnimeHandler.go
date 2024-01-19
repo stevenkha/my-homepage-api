@@ -14,14 +14,8 @@ import (
 	"my-homepage-api/utils"
 )
 
-type AnimeInfo struct {
-	Cover  string `json:"cover"`
-	Title  string `json:"title"`
-	Latest bool   `json:"latest"`
-}
-
 type AnimePayload struct {
-	Animes []AnimeInfo `json:"animes"`
+	Animes []utils.ItemInfo `json:"animes"`
 }
 
 func AnimeHandler(c *gin.Context) {
@@ -80,7 +74,7 @@ func AnimeHandler(c *gin.Context) {
 }
 
 func formatAnimeResp(series []*html.Node) AnimePayload {
-	var anime AnimeInfo
+	var anime utils.ItemInfo
 	var resPayload AnimePayload
 
 	// scuffed way of getting the data from the html tags
