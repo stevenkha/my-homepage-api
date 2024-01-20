@@ -9,15 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	version = "v1"
+)
+
 func main() {
 	r := gin.Default()
 
 	r.Use(cors.Default())
 
-	version := r.Group("/v1")
+	rg := r.Group("/" + version)
 	{
-		routes.AnimeRoutes(version.Group("/animes"))
-		routes.MangaRoutes(version.Group("/mangas"))
+		routes.AnimeRoutes(rg.Group("/animes"))
+		routes.MangaRoutes(rg.Group("/mangas"))
 	}
 
 	err := r.Run(":8000")
