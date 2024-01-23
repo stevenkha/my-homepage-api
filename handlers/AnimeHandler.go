@@ -137,24 +137,6 @@ func getScheduledAnimes(client *http.Client) []ScheduledAnimesResp {
 	return schAnimeResp
 }
 
-func getScheduledListUl(n *html.Node) []string {
-	list := make([]string, 0)
-
-	if n.Type == html.ElementNode && n.Data == "h3" {
-		for _, attr := range n.Attr {
-			if attr.Key == "data-jname" {
-				log.Debug(attr.Val)
-				list = append(list, n.FirstChild.Data)
-			}
-		}
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		getScheduledListUl(c)
-	}
-
-	return list
-}
-
 func formatAnimeResp(series []*html.Node) AnimePayload {
 	var anime AnimeInfo
 	var resPayload AnimePayload
