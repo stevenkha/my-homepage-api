@@ -18,8 +18,16 @@ type BookmarkResponse struct {
 	Data   string `json:"data"`
 }
 
+type MangaInfo struct {
+	Cover       string `json:"cover"`
+	Title       string `json:"title"`
+	Viewed      string `json:"viewed"`
+	Current     string `json:"current"`
+	CurrentLink string `json:"currentLink"`
+}
+
 type MangaPayload struct {
-	Mangas []utils.ItemInfo `json:"mangas"`
+	Mangas []MangaInfo `json:"mangas"`
 }
 
 func MangaHandler(c *gin.Context) {
@@ -78,7 +86,7 @@ func MangaHandler(c *gin.Context) {
 }
 
 func formatMangaResp(mangas []*html.Node) MangaPayload {
-	var manga utils.ItemInfo
+	var manga MangaInfo
 	var resPayload MangaPayload
 
 	// similar note about getting animes
