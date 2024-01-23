@@ -18,8 +18,7 @@ import (
 )
 
 type ScheduledAnimesResp struct {
-	Id int `json:"id"`
-	// Slug  string `json:"slug"`
+	Id        int    `json:"id"`
 	Title     string `json:"title"`
 	Timestamp int64  `json:"timestamp"`
 }
@@ -29,6 +28,7 @@ type AnimeInfo struct {
 	Title   string `json:"title"`
 	Viewed  string `json:"viewed"`
 	Current string `json:"current"`
+	Slug    string `json:"slug"`
 }
 
 type AnimePayload struct {
@@ -51,11 +51,15 @@ func AnimeHandler(c *gin.Context) {
 		anime.Title = strings.TrimSpace(n.FirstChild.NextSibling.FirstChild.FirstChild.Data)
 		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
 
+		slug := n.FirstChild.NextSibling.FirstChild.Attr[0].Val
+		parts := strings.Split(slug, "/")
+		anime.Slug = parts[2]
+
 		if newEpisode(scheduledAnimes, anime.Title) {
 			resPayload.ScheduledAnimes = append(resPayload.ScheduledAnimes, anime)
 		}
 
-		parts := strings.Split(progress, "/")
+		parts = strings.Split(progress, "/")
 		anime.Viewed = parts[0]
 		anime.Current = parts[1]
 
