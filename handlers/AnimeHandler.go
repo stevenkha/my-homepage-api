@@ -15,6 +15,12 @@ import (
 	"my-homepage-api/utils"
 )
 
+type ScheduledAnimesResp struct {
+	Id int `json:"id"`
+	// Slug  string `json:"slug"`
+	Title string `json:"title"`
+}
+
 type AnimeInfo struct {
 	Cover string `json:"cover"`
 	Title string `json:"title"`
