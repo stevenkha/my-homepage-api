@@ -50,19 +50,21 @@ func AnimeHandler(c *gin.Context) {
 		anime.Title = strings.TrimSpace(n.FirstChild.NextSibling.FirstChild.FirstChild.Data)
 		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
 
-		parts := strings.Split(progress, "/")
+		if newEpisode(scheduledAnimes, anime.Title) {
+			resPayload.ScheduledAnimes = append(resPayload.ScheduledAnimes, anime)
+		}
 
+		parts := strings.Split(progress, "/")
 		anime.Viewed = parts[0]
 		anime.Current = parts[1]
 
-		if caughtUp, err := checkProgress(anime.Current, anime.Viewed); err != nil {
+		caughtUp, err := checkProgress(anime.Current, anime.Viewed)
+		if err != nil {
 			log.Error("Could not check progress: %v", err)
-		} else if caughtUp {
-			continue
 		}
 
-		if newEpisode(scheduledAnimes, anime.Title) {
-			resPayload.ScheduledAnimes = append(resPayload.ScheduledAnimes, anime)
+		if !caughtUp {
+			resPayload.BacklogAnimes = append(resPayload.BacklogAnimes, anime)
 		}
 	}
 
