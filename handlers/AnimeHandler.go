@@ -56,22 +56,54 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Error parsing html: ")
 	}
 
-	c.JSON(http.StatusOK, payload)
+	animeListDiv := getScheduledListUl(doc)
+	if animeListDiv == nil {
+		log.Error("Could not find scheduled list node")
+	}
+
+	// animes := utils.MakeList(animeListDiv)
+	// payload := formatAnimeResp(animes)
+
+	// c.JSON(http.StatusOK, payload)
+}
+
+func getScheduledListUl(n *html.Node) []string {
+	list := make([]string, 0)
+
+	if n.Type == html.ElementNode {
+		for _, attr := range n.Attr {
+			if attr.Key == "class" && strings.Contains(attr.Val, "film-name") {
+				log.Debug(n.FirstChild.Data)
+				list = append(list, n.FirstChild.Data)
+			}
+		}
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		getScheduledListUl(c)
+	}
+
+	return list
 }
 
 func formatAnimeResp(series []*html.Node) AnimePayload {
 	var anime AnimeInfo
 	var resPayload AnimePayload
 
+	for _, n := range series {
+		anime.Title = n.FirstChild.Data
+		log.Debug(anime.Title)
+	}
+
 	// scuffed way of getting the data from the html tags
 	// if DOM structure changes this will break but I'll worry about it later...
-	for _, n := range series {
-		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
-		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
 
-		formatCover(&anime.Cover)
-		resPayload.Animes = append(resPayload.Animes, anime)
-	}
+	// for _, n := range series {
+	// 	anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+	// 	anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
+
+	// 	formatCover(&anime.Cover)
+	// 	resPayload.Animes = append(resPayload.Animes, anime)
+	// }
 
 	return resPayload
 }
