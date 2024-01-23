@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,14 @@ func AnimeHandler(c *gin.Context) {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
+	loc, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		log.Error("Error getting location")
+	}
+
+	updatedUrl := utils.AnimeUrl + time.Now().In(loc).Format("2006-01-02")
+
+	req, err := http.NewRequest("GET", updatedUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
 	}
@@ -48,15 +56,6 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Error parsing html: ")
 	}
 
-	watchingListDiv := utils.GetListDiv(doc, utils.AnimeListClass)
-	if watchingListDiv == nil {
-		log.Error("Could not get list of series")
-	}
-
-	animes := utils.MakeList(watchingListDiv)
-
-	payload := formatAnimeResp(animes)
-
 	c.JSON(http.StatusOK, payload)
 }
 
@@ -69,18 +68,6 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 	for _, n := range series {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
-
-		parts := strings.Split(progress, "/")
-
-		anime.Viewed = parts[0]
-		anime.Current = parts[1]
-
-		if caughtUp, err := checkProgress(anime.Current, anime.Viewed); err != nil {
-			log.Error("Could not check progress: %v", err)
-		} else if caughtUp {
-			continue
-		}
 
 		formatCover(&anime.Cover)
 		resPayload.Animes = append(resPayload.Animes, anime)
