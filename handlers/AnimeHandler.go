@@ -126,8 +126,10 @@ func formatCover(cover *string) {
 	*cover = strings.Join(urlParts, "/")
 }
 
-// Check if I am caught up with the latest episode
-// format of this data is '12/12' so check if the first half is equal to the second i.e '11/12'
+/*
+Check if I am caught up with the latest episode
+format of this data is '12/12' so check if the first half is equal to the second i.e '11/12'
+*/
 func checkProgress(current string, viewed string) (bool, error) {
 	c, err1 := strconv.Atoi(current)
 	if err1 != nil {
