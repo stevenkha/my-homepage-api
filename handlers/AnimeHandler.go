@@ -25,8 +25,10 @@ type ScheduledAnimesResp struct {
 }
 
 type AnimeInfo struct {
-	Cover string `json:"cover"`
-	Title string `json:"title"`
+	Cover   string `json:"cover"`
+	Title   string `json:"title"`
+	Viewed  string `json:"viewed"`
+	Current string `json:"Current"`
 }
 
 type AnimePayload struct {
@@ -45,6 +47,18 @@ func AnimeHandler(c *gin.Context) {
 	for _, n := range bookmarkedAnimes {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = strings.TrimSpace(n.FirstChild.NextSibling.FirstChild.FirstChild.Data)
+		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
+
+		parts := strings.Split(progress, "/")
+
+		anime.Viewed = parts[0]
+		anime.Current = parts[1]
+
+		if caughtUp, err := checkProgress(anime.Current, anime.Viewed); err != nil {
+			log.Error("Could not check progress: %v", err)
+		} else if caughtUp {
+			continue
+		}
 
 		if newEpisode(scheduledAnimes, anime.Title) {
 			resPayload.Animes = append(resPayload.Animes, anime)
