@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/cookiejar"
 	"strconv"
 	"strings"
 
@@ -16,11 +15,8 @@ import (
 )
 
 type AnimeInfo struct {
-	Cover       string `json:"cover"`
-	Title       string `json:"title"`
-	Viewed      string `json:"viewed"`
-	Current     string `json:"current"`
-	CurrentLink string `json:"currentLink"`
+	Cover string `json:"cover"`
+	Title string `json:"title"`
 }
 
 type AnimePayload struct {
@@ -28,31 +24,13 @@ type AnimePayload struct {
 }
 
 func AnimeHandler(c *gin.Context) {
-	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
-	if err != nil {
-		log.Error("Could not get env values")
-	}
 
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		log.Error("Could not initialize cookiejar: ")
-	}
-
-	client := &http.Client{
-		Jar: jar,
-	}
+	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
 	}
-
-	cookie := &http.Cookie{
-		Name:  cookieName,
-		Value: cookieValue,
-	}
-
-	req.AddCookie(cookie)
 
 	resp, err := client.Do(req)
 	if err != nil {
