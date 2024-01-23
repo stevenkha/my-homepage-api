@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -110,7 +111,7 @@ func getBookmarkedAnimes(client *http.Client) []*html.Node {
 	return utils.MakeList(watchingListDiv)
 }
 
-func getScheduledAnimes(client *http.Client) []string {
+func getScheduledAnimes(client *http.Client) []ScheduledAnimesResp {
 	req, err := http.NewRequest("GET", utils.ScheduledAnimeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
@@ -127,18 +128,13 @@ func getScheduledAnimes(client *http.Client) []string {
 		log.Error("Error reading response body: ")
 	}
 
-	doc, err := html.Parse(strings.NewReader(string(body)))
+	var schAnimeResp []ScheduledAnimesResp
+	err = json.Unmarshal(body, &schAnimeResp)
 	if err != nil {
-		log.Error("Error parsing html: ")
+		log.Error("Could not unmarshal scheduled animes response")
 	}
 
-	// TODO: make it so that the scheduled element shows when sending request to page
-	scheduledAnimes := getScheduledListUl(doc)
-	if scheduledAnimes == nil {
-		log.Error("Could not find scheduled list node")
-	}
-
-	return scheduledAnimes
+	return schAnimeResp
 }
 
 func getScheduledListUl(n *html.Node) []string {
