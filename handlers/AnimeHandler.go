@@ -44,9 +44,7 @@ func AnimeHandler(c *gin.Context) {
 
 	for _, n := range bookmarkedAnimes {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
-		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-
-		anime.Title = strings.TrimSpace(anime.Title)
+		anime.Title = strings.TrimSpace(n.FirstChild.NextSibling.FirstChild.FirstChild.Data)
 
 		if newEpisode(scheduledAnimes, anime.Title) {
 			resPayload.Animes = append(resPayload.Animes, anime)
