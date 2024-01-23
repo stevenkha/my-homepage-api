@@ -1,7 +1,7 @@
 package utils
 
 const (
-	ScheduledAnimeUrl       = "https://yugenanime.tv"
+	ScheduledAnimeUrl       = "https://yugenanime.tv/schedule.json"
 	BookmarkedAnimesUrl     = "https://yugenanime.tv/mylist/"
 	AnimeListClass          = "list-entries"
 	ScheduledAnimeListClass = "schedule-panel"
