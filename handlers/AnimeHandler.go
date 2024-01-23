@@ -56,8 +56,8 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Error parsing html: ")
 	}
 
-	animeListDiv := getScheduledListUl(doc)
-	if animeListDiv == nil {
+	scheduledAnimes := getScheduledListUl(doc)
+	if scheduledAnimes == nil {
 		log.Error("Could not find scheduled list node")
 	}
 
