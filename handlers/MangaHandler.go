@@ -22,6 +22,7 @@ type MangaInfo struct {
 	Cover       string `json:"cover"`
 	Title       string `json:"title"`
 	Viewed      string `json:"viewed"`
+	ViewedLink  string `json:"viewedLink"`
 	Current     string `json:"current"`
 	CurrentLink string `json:"currentLink"`
 }
@@ -101,6 +102,7 @@ func formatMangaResp(mangas []*html.Node) MangaPayload {
 			continue
 		}
 
+		manga.ViewedLink = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.NextSibling.Attr[1].Val
 		manga.CurrentLink = n.FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.NextSibling.Attr[2].Val
 
 		resPayload.Mangas = append(resPayload.Mangas, manga)
