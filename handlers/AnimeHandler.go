@@ -28,7 +28,7 @@ type AnimeInfo struct {
 	Cover   string `json:"cover"`
 	Title   string `json:"title"`
 	Viewed  string `json:"viewed"`
-	Current string `json:"Current"`
+	Current string `json:"current"`
 }
 
 type AnimePayload struct {
