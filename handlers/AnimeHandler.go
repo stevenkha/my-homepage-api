@@ -47,6 +47,7 @@ func AnimeHandler(c *gin.Context) {
 
 	for _, n := range bookmarkedAnimes {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+		formatCover(&anime.Cover)
 		anime.Title = strings.TrimSpace(n.FirstChild.NextSibling.FirstChild.FirstChild.Data)
 		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
 
