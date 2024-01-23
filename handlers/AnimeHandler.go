@@ -32,7 +32,8 @@ type AnimeInfo struct {
 }
 
 type AnimePayload struct {
-	Animes []AnimeInfo `json:"animes"`
+	ScheduledAnimes []AnimeInfo `json:"scheduledAnimes"`
+	BacklogAnimes   []AnimeInfo `json:"backlogAnimes"`
 }
 
 func AnimeHandler(c *gin.Context) {
@@ -61,7 +62,7 @@ func AnimeHandler(c *gin.Context) {
 		}
 
 		if newEpisode(scheduledAnimes, anime.Title) {
-			resPayload.Animes = append(resPayload.Animes, anime)
+			resPayload.ScheduledAnimes = append(resPayload.ScheduledAnimes, anime)
 		}
 	}
 
