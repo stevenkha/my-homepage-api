@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"strconv"
 	"strings"
+	"time"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,37 @@ type AnimePayload struct {
 }
 
 func AnimeHandler(c *gin.Context) {
+	client := &http.Client{}
+
+	scheduledAnimes := getScheduledAnimes(client)
+	bookmarkedAnimes := getBookmarkedAnimes(client)
+
+	var anime AnimeInfo
+	var resPayload AnimePayload
+
+	for _, n := range bookmarkedAnimes {
+		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
+
+		if newEpisode(scheduledAnimes, anime.Title) {
+			resPayload.Animes = append(resPayload.Animes, anime)
+		}
+	}
+
+	c.JSON(http.StatusOK, resPayload)
+}
+
+func newEpisode(scheduledAnimes []string, title string) bool {
+	for _, a := range scheduledAnimes {
+		if strings.Contains(a, title) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func getBookmarkedAnimes(client *http.Client) []*html.Node {
 	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
 	if err != nil {
 		log.Error("Could not get env values")
@@ -35,11 +67,9 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Could not initialize cookiejar: ")
 	}
 
-	client := &http.Client{
-		Jar: jar,
-	}
+	client.Jar = jar
 
-	req, err := http.NewRequest("GET", utils.AnimeUrl, nil)
+	req, err := http.NewRequest("GET", utils.BookmarkedAnimesUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
 	}
@@ -72,26 +102,83 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Could not get list of series")
 	}
 
-	animes := utils.MakeList(watchingListDiv)
+	return utils.MakeList(watchingListDiv)
+}
 
-	payload := formatAnimeResp(animes)
+func getScheduledAnimes(client *http.Client) []string {
 
-	c.JSON(http.StatusOK, payload)
+	loc, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		log.Error("Error getting location")
+	}
+
+	updatedUrl := utils.ScheduledAnimeUrl + time.Now().In(loc).Format("2006-01-02")
+
+	req, err := http.NewRequest("GET", updatedUrl, nil)
+	if err != nil {
+		log.Error("Could not create request: ")
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Error("Could not send HTTP request")
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Error("Error reading response body: ")
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Error("Error parsing html: ")
+	}
+
+	scheduledAnimes := getScheduledListUl(doc)
+	if scheduledAnimes == nil {
+		log.Error("Could not find scheduled list node")
+	}
+
+	return scheduledAnimes
+}
+
+func getScheduledListUl(n *html.Node) []string {
+	list := make([]string, 0)
+
+	if n.Type == html.ElementNode && n.Data == "h3" {
+		for _, attr := range n.Attr {
+			if attr.Key == "data-jname" {
+				log.Debug(attr.Val)
+				list = append(list, n.FirstChild.Data)
+			}
+		}
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		getScheduledListUl(c)
+	}
+
+	return list
 }
 
 func formatAnimeResp(series []*html.Node) AnimePayload {
 	var anime AnimeInfo
 	var resPayload AnimePayload
 
+	for _, n := range series {
+		anime.Title = n.FirstChild.Data
+	}
+
 	// scuffed way of getting the data from the html tags
 	// if DOM structure changes this will break but I'll worry about it later...
-	for _, n := range series {
-		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
-		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
 
-		formatCover(&anime.Cover)
-		resPayload.Animes = append(resPayload.Animes, anime)
-	}
+	// for _, n := range series {
+	// 	anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
+	// 	anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
+
+	// 	formatCover(&anime.Cover)
+	// 	resPayload.Animes = append(resPayload.Animes, anime)
+	// }
 
 	return resPayload
 }
