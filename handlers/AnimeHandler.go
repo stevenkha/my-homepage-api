@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -95,10 +96,34 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 			continue
 		}
 
+		formatCover(&anime.Cover)
 		resPayload.Animes = append(resPayload.Animes, anime)
 	}
 
 	return resPayload
+}
+
+/*
+Format the cover image of the animes to be higher resolution
+*/
+func formatCover(cover *string) {
+	w := 225
+	h := 300
+
+	// Split the URL into urlParts based on '/'
+	urlParts := strings.Split(*cover, "/")
+
+	// get the width and height string from the url array
+	dimensionParts := strings.Split(urlParts[4], ",")
+
+	// set new width and height
+	dimensionParts[0] = fmt.Sprintf("w_%d", w)
+	dimensionParts[1] = fmt.Sprintf("h_%d", h)
+
+	// combine
+	urlParts[4] = strings.Join(dimensionParts, ",")
+
+	*cover = strings.Join(urlParts, "/")
 }
 
 // Check if I am caught up with the latest episode
