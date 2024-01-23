@@ -7,7 +7,6 @@ import (
 	"net/http/cookiejar"
 	"strconv"
 	"strings"
-	"time"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
@@ -106,15 +105,7 @@ func getBookmarkedAnimes(client *http.Client) []*html.Node {
 }
 
 func getScheduledAnimes(client *http.Client) []string {
-
-	loc, err := time.LoadLocation("America/Los_Angeles")
-	if err != nil {
-		log.Error("Error getting location")
-	}
-
-	updatedUrl := utils.ScheduledAnimeUrl + time.Now().In(loc).Format("2006-01-02")
-
-	req, err := http.NewRequest("GET", updatedUrl, nil)
+	req, err := http.NewRequest("GET", utils.ScheduledAnimeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
 	}
