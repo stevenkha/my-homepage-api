@@ -16,11 +16,8 @@ import (
 )
 
 type AnimeInfo struct {
-	Cover       string `json:"cover"`
-	Title       string `json:"title"`
-	Viewed      string `json:"viewed"`
-	Current     string `json:"current"`
-	CurrentLink string `json:"currentLink"`
+	Cover string `json:"cover"`
+	Title string `json:"title"`
 }
 
 type AnimePayload struct {
@@ -91,18 +88,6 @@ func formatAnimeResp(series []*html.Node) AnimePayload {
 	for _, n := range series {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-		progress := n.FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.Data
-
-		parts := strings.Split(progress, "/")
-
-		anime.Viewed = parts[0]
-		anime.Current = parts[1]
-
-		if caughtUp, err := checkProgress(anime.Current, anime.Viewed); err != nil {
-			log.Error("Could not check progress: %v", err)
-		} else if caughtUp {
-			continue
-		}
 
 		formatCover(&anime.Cover)
 		resPayload.Animes = append(resPayload.Animes, anime)
