@@ -44,6 +44,8 @@ func AnimeHandler(c *gin.Context) {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
 
+		anime.Title = strings.TrimSpace(anime.Title)
+
 		if newEpisode(scheduledAnimes, anime.Title) {
 			resPayload.Animes = append(resPayload.Animes, anime)
 		}
@@ -111,7 +113,7 @@ func getBookmarkedAnimes(client *http.Client) []*html.Node {
 	return utils.MakeList(watchingListDiv)
 }
 
-func getScheduledAnimes(client *http.Client) []ScheduledAnimesResp {
+func getScheduledAnimes(client *http.Client) []string {
 	req, err := http.NewRequest("GET", utils.ScheduledAnimeUrl, nil)
 	if err != nil {
 		log.Error("Could not create request: ")
@@ -134,7 +136,13 @@ func getScheduledAnimes(client *http.Client) []ScheduledAnimesResp {
 		log.Error("Could not unmarshal scheduled animes response")
 	}
 
-	return schAnimeResp
+	schAnimes := make([]string, 0)
+
+	for _, a := range schAnimeResp {
+		schAnimes = append(schAnimes, a.Title)
+	}
+
+	return schAnimes
 }
 
 func formatAnimeResp(series []*html.Node) AnimePayload {
