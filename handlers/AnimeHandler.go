@@ -37,7 +37,6 @@ func AnimeHandler(c *gin.Context) {
 	for _, n := range bookmarkedAnimes {
 		anime.Cover = n.FirstChild.FirstChild.FirstChild.Attr[0].Val
 		anime.Title = n.FirstChild.NextSibling.FirstChild.FirstChild.Data
-		log.Debug(anime.Title)
 
 		if newEpisode(scheduledAnimes, anime.Title) {
 			resPayload.Animes = append(resPayload.Animes, anime)
@@ -147,10 +146,10 @@ func getScheduledAnimes(client *http.Client) []string {
 func getScheduledListUl(n *html.Node) []string {
 	list := make([]string, 0)
 
-	if n.Type == html.ElementNode {
+	if n.Type == html.ElementNode && n.Data == "h3" {
 		for _, attr := range n.Attr {
-			if attr.Key == "class" && strings.Contains(attr.Val, "film-name") {
-				log.Debug(n.FirstChild.Data)
+			if attr.Key == "data-jname" {
+				log.Debug(attr.Val)
 				list = append(list, n.FirstChild.Data)
 			}
 		}
