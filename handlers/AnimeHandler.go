@@ -8,6 +8,7 @@ import (
 	"net/http/cookiejar"
 	"strconv"
 	"strings"
+	"time"
 
 	log "github.com/ccpaging/log4go"
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,8 @@ import (
 type ScheduledAnimesResp struct {
 	Id int `json:"id"`
 	// Slug  string `json:"slug"`
-	Title string `json:"title"`
+	Title     string `json:"title"`
+	Timestamp int64  `json:"timestamp"`
 }
 
 type AnimeInfo struct {
@@ -136,10 +138,15 @@ func getScheduledAnimes(client *http.Client) []string {
 		log.Error("Could not unmarshal scheduled animes response")
 	}
 
+	dateFormat := "2006-01-02"
+	today := time.Now().Format(dateFormat)
 	schAnimes := make([]string, 0)
 
 	for _, a := range schAnimeResp {
-		schAnimes = append(schAnimes, a.Title)
+		animeRelease := time.Unix(a.Timestamp, 0).Format(dateFormat)
+		if strings.Contains(today, animeRelease) {
+			schAnimes = append(schAnimes, a.Title)
+		}
 	}
 
 	return schAnimes
