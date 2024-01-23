@@ -33,7 +33,7 @@ func AnimeHandler(c *gin.Context) {
 		log.Error("Error getting location")
 	}
 
-	updatedUrl := utils.AnimeUrl + time.Now().In(loc).Format("2006-01-02")
+	updatedUrl := utils.ScheduledAnimeUrl + time.Now().In(loc).Format("2006-01-02")
 
 	req, err := http.NewRequest("GET", updatedUrl, nil)
 	if err != nil {
