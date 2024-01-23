@@ -126,6 +126,7 @@ func getScheduledAnimes(client *http.Client) []string {
 		log.Error("Error parsing html: ")
 	}
 
+	// TODO: make it so that the scheduled element shows when sending request to page
 	scheduledAnimes := getScheduledListUl(doc)
 	if scheduledAnimes == nil {
 		log.Error("Could not find scheduled list node")
