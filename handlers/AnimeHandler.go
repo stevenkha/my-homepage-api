@@ -142,6 +142,7 @@ func getScheduledAnimes(client *http.Client) []string {
 	today := time.Now().Format(dateFormat)
 	schAnimes := make([]string, 0)
 
+	// only add animes that released on current day
 	for _, a := range schAnimeResp {
 		animeRelease := time.Unix(a.Timestamp, 0).Format(dateFormat)
 		if strings.Contains(today, animeRelease) {
