@@ -8,4 +8,5 @@ import (
 
 func AnimeRoutes(g *gin.RouterGroup) {
 	g.GET("", handlers.AnimeHandler)
+	g.GET("/update", handlers.UpdateHandler)
 }

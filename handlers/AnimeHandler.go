@@ -76,6 +76,16 @@ func AnimeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, resPayload)
 }
 
+func UpdateHandler(c *gin.Context) {
+	cookieName, cookieValue, err := utils.GetEnvValues("animeCookieName", "animeCookieValue")
+	if err != nil {
+		log.Error("Could not get env values")
+	}
+
+	c.SetCookie(cookieName, cookieValue, 3600, "/", "", false, true)
+	c.Redirect(http.StatusFound, utils.BookmarkedAnimesUrl)
+}
+
 func newEpisode(scheduledAnimes []string, title string) bool {
 	for _, a := range scheduledAnimes {
 		if strings.Contains(a, title) {
